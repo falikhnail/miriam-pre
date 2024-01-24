@@ -120,7 +120,10 @@ class KaryawanController extends Controller
         }
 
 
-        $ceknik = DB::table('karyawan')->where('nik', $nik_baru)->count();
+        $ceknik = DB::table('karyawan')
+            ->where('nik', $nik_baru)
+            ->where('nik', '!=', $nik)
+            ->count();
         if ($ceknik > 0) {
             return Redirect::back()->with(['warning' => 'Nik Sudah Digunakan']);
         }

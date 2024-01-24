@@ -95,26 +95,29 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Nik</th>
-                                                <th>Nama Karyawan</th>
-                                                <th>Cabang</th>
-                                                <th>Dept</th>
-                                                <th>Jadwal</th>
-                                                <th>Jam Masuk</th>
-                                                <th>Foto</th>
-                                                <th>Jam Pulang</th>
-                                                <th>Foto</th>
-                                                <th>Status</th>
-                                                <th>Keterangan</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="loadpresensi"></tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>No.</th>
+                                                    <th>Nik</th>
+                                                    <th>Nama Karyawan</th>
+                                                    <th>Cabang</th>
+                                                    <th>Dept</th>
+                                                    <th>Jadwal</th>
+                                                    <th>Jam Masuk</th>
+                                                    <th>Foto</th>
+                                                    <th>Jam Pulang</th>
+                                                    <th>Foto</th>
+                                                    <th>Status</th>
+                                                    <th>Keterangan</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="loadpresensi"></tbody>
+                                        </table>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

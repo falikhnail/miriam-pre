@@ -57,26 +57,32 @@
 
         }
 
+
+        body.A4.landscape .sheet {
+            width: 297mm !important;
+            height: auto !important;
+        }
     </style>
 </head>
 
 <!-- Set "A5", "A4" or "A3" for class name -->
 <!-- Set also "landscape" if you need -->
+
 <body class="A4 landscape">
     <?php
     function selisih($jam_masuk, $jam_keluar)
     {
-        list($h, $m, $s) = explode(":", $jam_masuk);
-        $dtAwal = mktime($h, $m, $s, "1", "1", "1");
-        list($h, $m, $s) = explode(":", $jam_keluar);
-        $dtAkhir = mktime($h, $m, $s, "1", "1", "1");
+        [$h, $m, $s] = explode(':', $jam_masuk);
+        $dtAwal = mktime($h, $m, $s, '1', '1', '1');
+        [$h, $m, $s] = explode(':', $jam_keluar);
+        $dtAkhir = mktime($h, $m, $s, '1', '1', '1');
         $dtSelisih = $dtAkhir - $dtAwal;
         $totalmenit = $dtSelisih / 60;
-        $jam = explode(".", $totalmenit / 60);
-        $sisamenit = ($totalmenit / 60) - $jam[0];
+        $jam = explode('.', $totalmenit / 60);
+        $sisamenit = $totalmenit / 60 - $jam[0];
         $sisamenit2 = $sisamenit * 60;
         $jml_jam = $jam[0];
-        return $jml_jam . ":" . round($sisamenit2);
+        return $jml_jam . ':' . round($sisamenit2);
     }
     ?>
     <!-- Each sheet element should have the class "sheet" -->
@@ -111,18 +117,18 @@
             </tr>
             <tr>
                 @foreach ($rangetanggal as $d)
-                @if ($d != NULL)
-                <th>{{ date("d",strtotime($d)) }}</th>
-                @endif
+                    @if ($d != null)
+                        <th>{{ date('d', strtotime($d)) }}</th>
+                    @endif
                 @endforeach
 
             </tr>
             @foreach ($rekap as $r)
-            <tr>
-                <td>{{ $r->nik }}</td>
-                <td>{{ $r->nama_lengkap }}</td>
+                <tr>
+                    <td>{{ $r->nik }}</td>
+                    <td>{{ $r->nama_lengkap }}</td>
 
-                <?php
+                    <?php
                     $jml_hadir = 0;
                     $jml_izin = 0;
                     $jml_sakit = 0;
@@ -164,20 +170,20 @@
                             $color = "red";
                         }
                 ?>
-                <td style="background-color: {{ $color }}">
+                    <td style="background-color: {{ $color }}">
 
-                    {{ $status }}
+                        {{ $status }}
 
-                </td>
-                <?php
+                    </td>
+                    <?php
                     }
                 ?>
-                <td>{{ !empty($jml_hadir) ? $jml_hadir : ""  }}</td>
-                <td>{{ !empty($jml_izin) ? $jml_izin : ""  }}</td>
-                <td>{{ !empty($jml_sakit) ? $jml_sakit : ""  }}</td>
-                <td>{{ !empty($jml_cuti) ? $jml_cuti : ""  }}</td>
-                <td>{{ !empty($jml_alpa) ? $jml_alpa : ""  }}</td>
-            </tr>
+                    <td>{{ !empty($jml_hadir) ? $jml_hadir : '' }}</td>
+                    <td>{{ !empty($jml_izin) ? $jml_izin : '' }}</td>
+                    <td>{{ !empty($jml_sakit) ? $jml_sakit : '' }}</td>
+                    <td>{{ !empty($jml_cuti) ? $jml_cuti : '' }}</td>
+                    <td>{{ !empty($jml_alpa) ? $jml_alpa : '' }}</td>
+                </tr>
             @endforeach
         </table>
 

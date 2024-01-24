@@ -90,6 +90,7 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::post('/izincuti/store', [IzincutiController::class, 'store']);
     Route::get('/izincuti/{kode_izin}/edit', [IzincutiController::class, 'edit']);
     Route::post('/izincuti/{kode_izin}/update', [IzincutiController::class, 'update']);
+    Route::post('/izincuti/getmaxcuti', [IzincutiController::class, 'getmaxcuti']);
 
     Route::get('/izin/{kode_izin}/showact', [PresensiController::class, 'showact']);
     Route::get('/izin/{kode_izin}/delete', [PresensiController::class, 'deleteizin']);
