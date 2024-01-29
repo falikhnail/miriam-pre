@@ -123,6 +123,9 @@ Route::group(['middleware' => ['role:administrator|admin departemen,user']], fun
     Route::post('/presensi/cetakrekap', [PresensiController::class, 'cetakrekap']);
 
     Route::get('/presensi/izinsakit', [PresensiController::class, 'izinsakit']);
+
+    Route::post('/koreksipresensi', [PresensiController::class, 'koreksipresensi']);
+    Route::post('/storekoreksipresensi', [PresensiController::class, 'storekoreksipresensi']);
 });
 
 

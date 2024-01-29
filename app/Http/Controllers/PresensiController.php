@@ -81,7 +81,9 @@ class PresensiController extends Controller
 
 
         $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
-        $cek = DB::table('presensi')->where('tgl_presensi', $hariini)->where('nik', $nik)->count();
+        $presensi = DB::table('presensi')->where('tgl_presensi', $hariini)->where('nik', $nik);
+        $cek = $presensi->count();
+        $datapresensi = $presensi->first();
         $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
         $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
 
@@ -116,8 +118,9 @@ class PresensiController extends Controller
 
 
 
-
-        if ($jamkerja == null) {
+        if ($datapresensi != null && $datapresensi->status != "h") {
+            return view('presensi.notifizin');
+        } else if ($jamkerja == null) {
             return view('presensi.notifjadwal');
         } else {
             return view('presensi.create', compact('cek', 'lok_kantor', 'jamkerja', 'hariini'));
@@ -510,7 +513,7 @@ class PresensiController extends Controller
         // }
 
 
-        return view('presensi.getpresensi', compact('presensi'));
+        return view('presensi.getpresensi', compact('presensi', 'tanggal'));
     }
 
     public function tampilkanpeta(Request $request)
@@ -683,7 +686,20 @@ class PresensiController extends Controller
         $user = User::find(Auth::guard('user')->user()->id);
 
         $query = Pengajuanizin::query();
-        $query->select('kode_izin', 'tgl_izin_dari', 'tgl_izin_sampai', 'pengajuan_izin.nik', 'nama_lengkap', 'jabatan', 'status', 'status_approved', 'keterangan', 'karyawan.kode_cabang', 'karyawan.kode_dept');
+        $query->select(
+            'kode_izin',
+            'tgl_izin_dari',
+            'tgl_izin_sampai',
+            'pengajuan_izin.nik',
+            'nama_lengkap',
+            'jabatan',
+            'status',
+            'status_approved',
+            'keterangan',
+            'karyawan.kode_cabang',
+            'karyawan.kode_dept',
+            'doc_sid'
+        );
         $query->join('karyawan', 'pengajuan_izin.nik', '=', 'karyawan.nik');
         if (!empty($request->dari) && !empty($request->sampai)) {
             $query->whereBetween('tgl_izin_dari', [$request->dari, $request->sampai]);
@@ -844,6 +860,58 @@ class PresensiController extends Controller
         } catch (\Exception $e) {
             return redirect('/presensi/izin')->with(['error' => 'Data Gagal Dihapus']);
             //throw $th;
+        }
+    }
+
+    public function koreksipresensi(Request $request)
+    {
+        $nik = $request->nik;
+        $karyawan = DB::table('karyawan')->where('nik', $nik)->first();
+        $tanggal = $request->tanggal;
+        $presensi = DB::table('presensi')->where('nik', $nik)->where('tgl_presensi', $tanggal)->first();
+        $jamkerja = DB::table('jam_kerja')->orderBy('kode_jam_kerja')->get();
+        return view('presensi.koreksipresensi', compact('karyawan', 'tanggal', 'jamkerja', 'presensi'));
+    }
+
+
+    public function storekoreksipresensi(Request $request)
+    {
+        $status = $request->status;
+        $nik = $request->nik;
+        $tanggal = $request->tanggal;
+        $jam_in = $status == "a" ? NULL : $request->jam_in;
+        $jam_out = $status == "a" ? NULL : $request->jam_out;
+        $kode_jam_kerja = $status == "a" ? NULL : $request->kode_jam_kerja;
+
+        try {
+
+            $cekpresensi = DB::table('presensi')->where('nik', $nik)->where('tgl_presensi', $tanggal)->count();
+            if ($cekpresensi > 0) {
+                DB::table('presensi')
+                    ->where('nik', $nik)
+                    ->where('tgl_presensi', $tanggal)
+                    ->update([
+                        'jam_in' => $jam_in,
+                        'jam_out' => $jam_out,
+                        'kode_jam_kerja' => $kode_jam_kerja,
+                        'status' => $status
+                    ]);
+            } else {
+                DB::table('presensi')->insert([
+                    'nik' => $nik,
+                    'tgl_presensi' => $tanggal,
+                    'jam_in' => $jam_in,
+                    'jam_out' => $jam_out,
+                    'kode_jam_kerja' => $kode_jam_kerja,
+                    'status' => $status
+                ]);
+            }
+
+
+            return Redirect::back()->with(['success' => 'Data Berhasil Disimpan']);
+        } catch (\Exception $e) {
+            dd($e);
+            return Redirect::back()->with(['warning' => 'Data Gagal Disimpan']);
         }
     }
 

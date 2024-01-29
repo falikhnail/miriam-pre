@@ -195,6 +195,16 @@
                                 <th>Departemen</th>
                                 <th>Cabang</th>
                                 <th>Status</th>
+                                <th>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-paperclip"
+                                        width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                        stroke="currentColor" fill="none" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path
+                                            d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" />
+                                    </svg>
+                                </th>
                                 <th>Keterangan</th>
                                 <th>Status Approve</th>
                                 @role('administrator', 'user')
@@ -217,6 +227,24 @@
                                     <td>{{ $d->kode_dept }}</td>
                                     <td>{{ $d->kode_cabang }}</td>
                                     <td>{{ $d->status == 'i' ? 'Izin' : 'Sakit' }}</td>
+                                    <td>
+                                        @if (!empty($d->doc_sid))
+                                            @php
+                                                $path = Storage::url('uploads/sid/' . $d->doc_sid);
+                                            @endphp
+                                            <a href="{{ url($path) }}" target="_blank">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="icon icon-tabler icon-tabler-paperclip" width="24"
+                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                    stroke="currentColor" fill="none" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path
+                                                        d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" />
+                                                </svg>
+                                            </a>
+                                        @endif
+                                    </td>
                                     <td>{{ $d->keterangan }}</td>
                                     <td>
                                         @if ($d->status_approved == 1)
