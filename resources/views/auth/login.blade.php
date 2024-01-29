@@ -31,7 +31,7 @@
 
         <div class="login-form mt-1">
             <div class="section">
-                <img src="{{ asset('assets/img/login/login.webp') }}" alt="image" class="form-image">
+                <img src="{{ asset('assets/img/login/loginmiriam.png') }}" alt="image" class="form-image">
             </div>
             <div class="section mt-1">
                 <h1>E-Presensi</h1>
