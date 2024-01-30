@@ -14,8 +14,12 @@ class CabangController extends Controller
         return view('cabang.index', compact('cabang'));
     }
 
-
- 
+    public function store(Request $request)
+    {
+        $kode_cabang = $request->kode_cabang;
+        $nama_cabang = $request->nama_cabang;
+        $lokasi_cabang = $request->lokasi_cabang;
+        $radius_cabang = $request->radius_cabang;
 
         try {
             $data = [
