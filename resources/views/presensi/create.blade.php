@@ -141,6 +141,28 @@
             navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
         }
 
+        function successCallback(position) {
+            lokasi.value = position.coords.latitude + "," + position.coords.longitude;
+            var map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 18);
+            var lokasi_kantor = "{{ $lok_kantor->lokasi_cabang }}";
+            var lok = lokasi_kantor.split(",");
+            var lat_kantor = lok[0];
+            var long_kantor = lok[1];
+            var radius = "{{ $lok_kantor->radius_cabang }}";
+            L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            }).addTo(map);
+            var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
+            var circle = L.circle([lat_kantor, long_kantor], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: radius
+            }).addTo(map);
+        }
+
+        function errorCallback() {
 
         }
 
