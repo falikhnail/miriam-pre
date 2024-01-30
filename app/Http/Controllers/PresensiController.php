@@ -88,7 +88,12 @@ class PresensiController extends Controller
         $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
 
 
-
+        //Cek Jam Kerja By Date
+        $jamkerja = DB::table('konfigurasi_jamkerja_by_date')
+            ->join('jam_kerja', 'konfigurasi_jamkerja_by_date.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->where('nik', $nik)
+            ->where('tanggal', $hariini)
+            ->first();
 
         //Jika Tidak Memiliki Jam Kerja By Date
         if ($jamkerja == null) {
