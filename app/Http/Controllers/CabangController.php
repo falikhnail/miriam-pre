@@ -14,6 +14,7 @@ class CabangController extends Controller
         return view('cabang.index', compact('cabang'));
     }
 
+
     public function store(Request $request)
     {
         $kode_cabang = $request->kode_cabang;

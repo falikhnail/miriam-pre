@@ -14,6 +14,9 @@ class DashboardController extends Controller
         $bulanini = date("m") * 1; //1 atau Januari
         $tahunini = date("Y"); // 2023
         $nik = Auth::guard('karyawan')->user()->nik;
+        $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
+
+        $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
         $presensihariini = DB::table('presensi')->where('nik', $nik)->where('tgl_presensi', $hariini)->first();
         $historibulanini = DB::table('presensi')
             ->select('presensi.*', 'keterangan', 'jam_kerja.*', 'doc_sid', 'nama_cuti')
@@ -49,10 +52,10 @@ class DashboardController extends Controller
             ->get();
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
+        $cabang = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+        $departemen = DB::table('departemen')->where('kode_dept', $kode_dept)->first();
 
-
-
-        return view('dashboard.dashboard', compact('presensihariini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'leaderboard'));
+        return view('dashboard.dashboard', compact('presensihariini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'leaderboard', 'cabang', 'departemen'));
     }
 
     public function dashboardadmin()

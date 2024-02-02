@@ -32,7 +32,10 @@
             <div id="user-info">
                 <h3 id="user-name">{{ Auth::guard('karyawan')->user()->nama_lengkap }}</h3>
                 <span id="user-role">{{ Auth::guard('karyawan')->user()->jabatan }}</span>
-                <span id="user-role">({{ Auth::guard('karyawan')->user()->kode_cabang }})</span>
+                <span id="user-role">({{ $cabang->nama_cabang }})</span>
+                <p style="margin-top: 15px">
+                    <span id="user-role">({{ $departemen->nama_dept }})</span>
+                </p>
             </div>
         </div>
     </div>
@@ -220,26 +223,26 @@
             <div class="tab-content mt-2" style="margin-bottom:100px;">
                 <div class="tab-pane fade show active" id="home" role="tabpanel">
                     <!--
-                                                                                                                                    <ul class="listview image-listview">
-                                                                                                                                        @foreach ($historibulanini as $d)
+                                                                                                                                                                            <ul class="listview image-listview">
+                                                                                                                                                                                @foreach ($historibulanini as $d)
     @php
         $path = Storage::url('uploads/absensi/' . $d->foto_in);
     @endphp
-                                                                                                                                        <li>
-                                                                                                                                            <div class="item">
-                                                                                                                                                <div class="icon-box bg-primary">
-                                                                                                                                                    <ion-icon name="finger-print-outline"></ion-icon>
-                                                                                                                                                </div>
-                                                                                                                                                <div class="in">
-                                                                                                                                                    <div>{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</div>
-                                                                                                                                                    <span class="badge badge-success">{{ $d->jam_in }}</span>
-                                                                                                                                                    <span class="badge badge-danger">{{ $presensihariini != null && $d->jam_out != null ? $d->jam_out : 'Belum Absen' }}</span>
-                                                                                                                                                </div>
-                                                                                                                                            </div>
-                                                                                                                                        </li>
+                                                                                                                                                                                <li>
+                                                                                                                                                                                    <div class="item">
+                                                                                                                                                                                        <div class="icon-box bg-primary">
+                                                                                                                                                                                            <ion-icon name="finger-print-outline"></ion-icon>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                        <div class="in">
+                                                                                                                                                                                            <div>{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</div>
+                                                                                                                                                                                            <span class="badge badge-success">{{ $d->jam_in }}</span>
+                                                                                                                                                                                            <span class="badge badge-danger">{{ $presensihariini != null && $d->jam_out != null ? $d->jam_out : 'Belum Absen' }}</span>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </li>
     @endforeach
-                                                                                                                                    </ul>
-                                                                                                                                -->
+                                                                                                                                                                            </ul>
+                                                                                                                                                                        -->
                     <style>
                         .historicontent {
                             display: flex;
