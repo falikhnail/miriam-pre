@@ -763,7 +763,6 @@ class PresensiController extends Controller
                 }
             }
 
-
             DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->update([
                 'status_approved' => $status_approved
             ]);
