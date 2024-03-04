@@ -5,6 +5,7 @@ use App\Http\Controllers\CabangController;
 use App\Http\Controllers\CutiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartemenController;
+use App\Http\Controllers\HariliburController;
 use App\Http\Controllers\IzinabsenController;
 use App\Http\Controllers\IzincutiController;
 use App\Http\Controllers\IzinsakitController;
@@ -190,6 +191,20 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::post('/konfigurasi/users/{id_user}/delete', [UserController::class, 'delete']);
 
 
+    //Harilibur
+
+    Route::get('/konfigurasi/harilibur', [HariliburController::class, 'index']);
+    Route::get('/konfigurasi/harilibur/create', [HariliburController::class, 'create']);
+    Route::post('/konfigurasi/harilibur/store', [HariliburController::class, 'store']);
+    Route::post('/konfigurasi/harilibur/edit', [HariliburController::class, 'edit']);
+    Route::post('/konfigurasi/harilibur/{kode_libur}/update', [HariliburController::class, 'update']);
+    Route::post('/konfigurasi/harilibur/{kode_libur}/delete', [HariliburController::class, 'delete']);
+    Route::get('/konfigurasi/harilibur/{kode_libur}/setkaryawanlibur', [HariliburController::class, 'setkaryawanlibur']);
+    Route::get('/konfigurasi/harilibur/{kode_libur}/setlistkaryawanlibur', [HariliburController::class, 'setlistkaryawanlibur']);
+    Route::get('/konfigurasi/harilibur/{kode_libur}/getsetlistkaryawanlibur', [HariliburController::class, 'getsetlistkaryawanlibur']);
+    Route::post('/konfigurasi/harilibur/storekaryawanlibur', [HariliburController::class, 'storekaryawanlibur']);
+    Route::post('/konfigurasi/harilibur/removekaryawanlibur', [HariliburController::class, 'removekaryawanlibur']);
+    Route::get('/konfigurasi/harilibur/{kode_libur}/getkaryawanlibur', [HariliburController::class, 'getkaryawanlibur']);
     //Cuti
 
     Route::get('/cuti', [CutiController::class, 'index']);

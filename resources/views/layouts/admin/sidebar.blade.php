@@ -380,6 +380,10 @@
 
                             <div class="dropdown-menu-columns">
                                 <div class="dropdown-menu-column">
+                                    <a class="dropdown-item  {{ request()->is(['konfigurasi/harilibur']) ? 'active' : '' }}"
+                                        href="/konfigurasi/harilibur">
+                                        Hari Libur
+                                    </a>
                                     <a class="dropdown-item  {{ request()->is(['konfigurasi/jamkerja']) ? 'active' : '' }}"
                                         href="/konfigurasi/jamkerja">
                                         Jam Kerja

@@ -137,6 +137,13 @@
                     $color = "";
                     for($i=1; $i<=$jmlhari; $i++){
                         $tgl = "tgl_".$i;
+                        $tgl_presensi = $rangetanggal[$i-1];
+                        $search_items = [
+                            'nik' => $r->nik,
+                            'tanggal_libur' => $tgl_presensi
+                        ];
+                        $ceklibur = cekkaryawanlibur($datalibur, $search_items);
+
                         $datapresensi = explode("|",$r->$tgl);
                         if($r->$tgl != NULL){
                             $status = $datapresensi[2];
@@ -169,11 +176,19 @@
                             $jml_alpa += 1;
                             $color = "red";
                         }
+
+                        if(!empty($ceklibur)){
+                            $color = "green";
+                        }
+
+
                 ?>
                     <td style="background-color: {{ $color }}">
 
                         {{ $status }}
-
+                        {{-- @if (!empty($ceklibur))
+                            {{ $ceklibur[0]['keterangan'] }}
+                        @endif --}}
                     </td>
                     <?php
                     }
@@ -186,7 +201,12 @@
                 </tr>
             @endforeach
         </table>
-
+        <h4>Keterangan Libur :</h4>
+        <ol>
+            @foreach ($harilibur as $d)
+                <li>{{ date('d-m-Y', strtotime($d->tanggal_libur)) }} - {{ $d->keterangan }}</li>
+            @endforeach
+        </ol>
         <table width="100%" style="margin-top:100px">
             <tr>
                 <td></td>
@@ -203,6 +223,8 @@
                 </td>
             </tr>
         </table>
+
+
     </section>
 
 </body>

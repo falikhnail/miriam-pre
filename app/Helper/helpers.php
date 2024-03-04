@@ -1,4 +1,7 @@
 <?php
+
+use Illuminate\Support\Facades\DB;
+
 function hitungjamterlambat($jadwal_jam_masuk, $jam_presensi)
 {
     $j1 = strtotime($jadwal_jam_masuk);
@@ -77,4 +80,56 @@ function hitungjamkerja($jam_masuk, $jam_pulang)
     }
 
     return $jam . ":" . $menit;
+}
+
+
+function getkaryawanlibur($dari, $sampai)
+{
+    $datalibur = DB::table('harilibur_detail')
+        ->join('harilibur', 'harilibur_detail.kode_libur', '=', 'harilibur.kode_libur')
+        ->whereBetween('tanggal_libur', [$dari, $sampai])
+        ->get();
+
+    $karyawanlibur = [];
+    foreach ($datalibur as $d) {
+        $karyawanlibur[] = [
+            'nik' => $d->nik,
+            'tanggal_libur' => $d->tanggal_libur,
+            'keterangan' => $d->keterangan
+        ];
+    }
+
+    return $karyawanlibur;
+}
+
+
+function cekkaryawanlibur($array, $search_list)
+{
+
+    // Create the result array
+    $result = array();
+
+    // Iterate over each array element
+    foreach ($array as $key => $value) {
+
+        // Iterate over each search condition
+        foreach ($search_list as $k => $v) {
+
+            // If the array element does not meet
+            // the search condition then continue
+            // to the next element
+            if (!isset($value[$k]) || $value[$k] != $v) {
+
+                // Skip two loops
+                continue 2;
+            }
+        }
+
+        // Append array element's key to the
+        //result array
+        $result[] = $value;
+    }
+
+    // Return result
+    return $result;
 }

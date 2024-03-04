@@ -7,7 +7,7 @@
                     <!-- Page pre-title -->
 
                     <h2 class="page-title">
-                        Data Departemen / Unit
+                        Data Departemen
                     </h2>
                 </div>
 
@@ -87,7 +87,7 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Kode Dept / Unt</th>
+                                                <th>Kode Dept</th>
                                                 <th>Nama Dept</th>
                                                 <th>Aksi</th>
                                             </tr>

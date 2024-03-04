@@ -597,6 +597,8 @@ class PresensiController extends Controller
         $dari  = $tahun . "-" . $bulan . "-01";
         $sampai = date("Y-m-t", strtotime($dari));
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        $datalibur = getkaryawanlibur($dari, $sampai);
+        $harilibur = DB::table('harilibur')->whereBetween('tanggal_libur', [$dari, $sampai])->get();
 
         $select_date = "";
         $field_date = "";
@@ -667,6 +669,7 @@ class PresensiController extends Controller
         $query->orderBy('nama_lengkap');
         $rekap = $query->get();
 
+
         //dd($rekap);
         if (isset($_POST['exportexcel'])) {
             $time = date("d-M-Y H:i:s");
@@ -675,7 +678,7 @@ class PresensiController extends Controller
             // Mendefinisikan nama file ekspor "hasil-export.xls"
             header("Content-Disposition: attachment; filename=Rekap Presensi Karyawan $time.xls");
         }
-        return view('presensi.cetakrekap', compact('bulan', 'tahun', 'namabulan', 'rekap', 'rangetanggal', 'jmlhari'));
+        return view('presensi.cetakrekap', compact('bulan', 'tahun', 'namabulan', 'rekap', 'rangetanggal', 'jmlhari', 'datalibur', 'harilibur'));
     }
 
     public function izinsakit(Request $request)
@@ -762,6 +765,7 @@ class PresensiController extends Controller
                     $tgl_dari = date("Y-m-d", strtotime("+1 days", strtotime($tgl_dari)));
                 }
             }
+
 
             DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->update([
                 'status_approved' => $status_approved
