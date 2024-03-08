@@ -151,36 +151,40 @@
                             $status = "";
                         }
 
+                        $cekhari =gethari(date('D',strtotime($tgl_presensi)));
                         if($status == "h"){
                             $jml_hadir += 1;
-                            $color = "white";
+                            $color = "#90EE90";
                         }
 
                         if($status == "i"){
                             $jml_izin += 1;
-                            $color = "#ffbb00";
+                            $color = "#ADD8E6";
                         }
 
                         if($status == "s"){
                             $jml_sakit += 1;
-                            $color = "#34a1eb";
+                            $color = "#FFC0CB";
                         }
 
                         if($status == "c"){
                             $jml_cuti += 1;
-                            $color = "#a600ff";
+                            $color = "#ffbb00";
                         }
 
 
-                        if(empty($status)){
+                        if(empty($status) && empty($ceklibur) && $cekhari != 'Minggu'){
                             $jml_alpa += 1;
-                            $color = "red";
+                            $color = "#D3D3D3";
                         }
 
                         if(!empty($ceklibur)){
-                            $color = "green";
+                            $color = "red";
                         }
 
+                        if($cekhari == "Minggu"){
+                            $color = "red";
+                        }
 
                 ?>
                     <td style="background-color: {{ $color }}">
