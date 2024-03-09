@@ -595,22 +595,21 @@ class PresensiController extends Controller
         $tahun = $request->tahun;
         $kode_dept = $request->kode_dept;
         $kode_cabang = $request->kode_cabang;
-        $dari  = $tahun . "-" . $bulan . "-01";
-        $sampai = date("Y-m-t", strtotime($dari));
+        // $dari  = $tahun . "-" . $bulan . "-01";
+        // $sampai = date("Y-m-t", strtotime($dari));
+        if ($bulan == 1) {
+            $bulanlalu = 12;
+            $tahunlalu = $tahun - 1;
+        } else {
+            $bulanlalu = $bulan - 1;
+            $tahunlalu = $tahun;
+        }
 
-        // if ($bulan == 1) {
-        //     $bulanlalu = 12;
-        //     $tahunlalu = $tahun - 1;
-        // } else {
-        //     $bulanlalu = $bulan - 1;
-        //     $tahunlalu = $tahun;
-        // }
+        $dari = $tahunlalu . "-" . $bulanlalu . "-21";
+        $sampai = $tahun . "-" . $bulan . "-20";
 
-        // $dari = $tahunlalu . "-" . $bulanlalu . "-21";
-        // $sampai = $tahun . "-" . $bulan . "-20";
-
-        //Februari 2024
-        //21 Januari 2024 s/d 20 Februari 2024
+        // Februari 2024
+        // 21 Januari 2024 s/d 20 Februari 2024
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $datalibur = getkaryawanlibur($dari, $sampai);
         $harilibur = DB::table('harilibur')->whereBetween('tanggal_libur', [$dari, $sampai])->get();
