@@ -175,7 +175,28 @@ class KaryawanController extends Controller
         if ($reset) {
             return Redirect::back()->with(['success' => 'Data Password Berhasil di Reset']);
         } else {
-            return Redirect::back()->with(['warnin' => 'Data Password Gagal di Reset']);
+            return Redirect::back()->with(['warning' => 'Data Password Gagal di Reset']);
+        }
+    }
+
+    public function lockandunlocklocation($nik)
+    {
+        try {
+            $karyawan = DB::table('karyawan')->where('nik', $nik)->first();
+            $status_location = $karyawan->status_location;
+            if ($status_location == '1') {
+                DB::table('karyawan')->where('nik', $nik)->update([
+                    'status_location' => '0'
+                ]);
+            } else {
+                DB::table('karyawan')->where('nik', $nik)->update([
+                    'status_location' => '1'
+                ]);
+            }
+
+            return Redirect::back()->with(['success' => 'Status Location Berhasil Diupdate']);
+        } catch (\Exception $e) {
+            return Redirect::back()->with(['warning' => 'Status Location Gagal Diupdate']);
         }
     }
 }

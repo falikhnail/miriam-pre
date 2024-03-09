@@ -141,7 +141,7 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::post('/karyawan/edit', [KaryawanController::class, 'edit']);
     Route::post('/karyawan/{nik}/update', [KaryawanController::class, 'update']);
     Route::post('/karyawan/{nik}/delete', [KaryawanController::class, 'delete']);
-
+    Route::get('/karyawan/{nik}/lockandunlocklocation', [KaryawanController::class, 'lockandunlocklocation']);
     //Departemen
     Route::get('/departemen', [DepartemenController::class, 'index'])->middleware('permission:view-departemen,user');;
     Route::post('/departemen/store', [DepartemenController::class, 'store']);

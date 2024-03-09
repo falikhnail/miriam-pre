@@ -37,7 +37,8 @@
                                         </div>
                                     </div>
                                 @else
-                                    <input type="hidden" name="kode_cabang" value="{{ Auth::user()->kode_cabang }}">
+                                    <input type="hidden" name="kode_cabang"
+                                        value="{{ Auth::guard('user')->user()->kode_cabang }}">
                                 @endrole
                                 <div class="row mt-2">
                                     <div class="col-12">
@@ -59,7 +60,7 @@
                                             <select name="tahun" id="tahun" class="form-select" required>
                                                 <option value="">Tahun</option>
                                                 @php
-                                                    $tahunmulai = 2022;
+                                                    $tahunmulai = 2023;
                                                     $tahunskrg = date('Y');
                                                 @endphp
                                                 @for ($tahun = $tahunmulai; $tahun <= $tahunskrg; $tahun++)

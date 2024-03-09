@@ -131,6 +131,7 @@ class PresensiController extends Controller
     {
 
         $nik = Auth::guard('karyawan')->user()->nik;
+        $status_location = Auth::guard('karyawan')->user()->status_location;
         $hariini = date("Y-m-d");
         $jamsekarang = date("H:i");
         $tgl_sebelumnya = date('Y-m-d', strtotime("-1 days", strtotime($hariini)));
@@ -209,7 +210,7 @@ class PresensiController extends Controller
         $jamkerja_pulang = $tgl_pulang . " " . $jamkerja->jam_pulang;
         $datakaryawan = DB::table('karyawan')->where('nik', $nik)->first();
         $no_hp = $datakaryawan->no_hp;
-        if ($radius > $lok_kantor->radius_cabang) {
+        if ($status_location == 1 && $radius > $lok_kantor->radius_cabang) {
             echo "error|Maaf Anda Berada Diluar Radius, Jarak Anda " . $radius . " meter dari Kantor|radius";
         } else {
             if ($cek > 0) {
@@ -596,6 +597,20 @@ class PresensiController extends Controller
         $kode_cabang = $request->kode_cabang;
         $dari  = $tahun . "-" . $bulan . "-01";
         $sampai = date("Y-m-t", strtotime($dari));
+
+        // if ($bulan == 1) {
+        //     $bulanlalu = 12;
+        //     $tahunlalu = $tahun - 1;
+        // } else {
+        //     $bulanlalu = $bulan - 1;
+        //     $tahunlalu = $tahun;
+        // }
+
+        // $dari = $tahunlalu . "-" . $bulanlalu . "-21";
+        // $sampai = $tahun . "-" . $bulan . "-20";
+
+        //Februari 2024
+        //21 Januari 2024 s/d 20 Februari 2024
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $datalibur = getkaryawanlibur($dari, $sampai);
         $harilibur = DB::table('harilibur')->whereBetween('tanggal_libur', [$dari, $sampai])->get();
@@ -657,10 +672,10 @@ class PresensiController extends Controller
                 $join->on('karyawan.nik', '=', 'presensi.nik');
             }
         );
+
         if (!empty($kode_dept)) {
             $query->where('kode_dept', $kode_dept);
         }
-
         if (!empty($kode_cabang)) {
             $query->where('kode_cabang', $kode_cabang);
         }
