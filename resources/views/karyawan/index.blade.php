@@ -123,7 +123,35 @@
                                                 <th>Foto</th>
                                                 <th>Departemen</th>
                                                 <th>Cabang</th>
-                                                <th>Location</th>
+                                                <th>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="icon icon-tabler icons-tabler-outline icon-tabler-map-2">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                        <path d="M12 18.5l-3 -1.5l-6 3v-13l6 -3l6 3l6 -3v7.5" />
+                                                        <path d="M9 4v13" />
+                                                        <path d="M15 7v5.5" />
+                                                        <path
+                                                            d="M21.121 20.121a3 3 0 1 0 -4.242 0c.418 .419 1.125 1.045 2.121 1.879c1.051 -.89 1.759 -1.516 2.121 -1.879z" />
+                                                        <path d="M19 18v.01" />
+                                                    </svg>
+                                                </th>
+                                                <th>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-clock">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                        <path
+                                                            d="M10.5 21h-4.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v3" />
+                                                        <path d="M16 3v4" />
+                                                        <path d="M8 3v4" />
+                                                        <path d="M4 11h10" />
+                                                        <path d="M18 18m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                                                        <path d="M18 16.5v1.5l.5 .5" />
+                                                    </svg>
+                                                </th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -140,10 +168,11 @@
                                                     <td>{{ $d->no_hp }}</td>
                                                     <td>
                                                         @if (empty($d->foto))
-                                                            <img src="{{ asset('assets/img/nophoto.png') }}" class="avatar"
-                                                                alt="">
+                                                            <img src="{{ asset('assets/img/nophoto.png') }}"
+                                                                class="avatar" alt="">
                                                         @else
-                                                            <img src="{{ url($path) }}" class="avatar" alt="">
+                                                            <img src="{{ url($path) }}" class="avatar"
+                                                                alt="">
                                                         @endif
 
                                                     </td>
@@ -170,6 +199,46 @@
                                                             </a>
                                                         @else
                                                             <a href="/karyawan/{{ $d->nik }}/lockandunlocklocation">
+                                                                <span class="badge bg-success badge-sm">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="icon icon-tabler icon-tabler-lock-open"
+                                                                        width="24" height="24" viewBox="0 0 24 24"
+                                                                        stroke-width="1.5" stroke="currentColor"
+                                                                        fill="none" stroke-linecap="round"
+                                                                        stroke-linejoin="round">
+                                                                        <path stroke="none" d="M0 0h24v24H0z"
+                                                                            fill="none" />
+                                                                        <path
+                                                                            d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" />
+                                                                        <path
+                                                                            d="M12 16m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                                                                        <path d="M8 11v-5a4 4 0 0 1 8 0" />
+                                                                    </svg>
+                                                                </span>
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @if ($d->status_jam_kerja == 1)
+                                                            <a href="/karyawan/{{ $d->nik }}/lockandunlockjamkerja">
+                                                                <span class=" badge bg-danger badge-sm">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="icon icon-tabler icon-tabler-lock"
+                                                                        width="24" height="24" viewBox="0 0 24 24"
+                                                                        stroke-width="1.5" stroke="currentColor"
+                                                                        fill="none" stroke-linecap="round"
+                                                                        stroke-linejoin="round">
+                                                                        <path stroke="none" d="M0 0h24v24H0z"
+                                                                            fill="none" />
+                                                                        <path
+                                                                            d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z" />
+                                                                        <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
+                                                                        <path d="M8 11v-4a4 4 0 1 1 8 0v4" />
+                                                                    </svg>
+                                                                </span>
+                                                            </a>
+                                                        @else
+                                                            <a href="/karyawan/{{ $d->nik }}/lockandunlockjamkerja">
                                                                 <span class="badge bg-success badge-sm">
                                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                                         class="icon icon-tabler icon-tabler-lock-open"

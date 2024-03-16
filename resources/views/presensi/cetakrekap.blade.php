@@ -151,7 +151,7 @@
                             $status = "";
                         }
 
-                        $cekhari =gethari(date('D',strtotime($tgl_presensi)));
+                        $cekhari = gethari(date('D',strtotime($tgl_presensi)));
                         if($status == "h"){
                             $jml_hadir += 1;
                             $color = "#90EE90";
@@ -182,17 +182,18 @@
                             $color = "red";
                         }
 
+
                         if($cekhari == "Minggu"){
                             $color = "red";
                         }
+
+
 
                 ?>
                     <td style="background-color: {{ $color }}">
 
                         {{ $status }}
-                        {{-- @if (!empty($ceklibur))
-                            {{ $ceklibur[0]['keterangan'] }}
-                        @endif --}}
+
                     </td>
                     <?php
                     }

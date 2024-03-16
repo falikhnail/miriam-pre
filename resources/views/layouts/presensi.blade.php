@@ -36,6 +36,17 @@
             color: #495057;
         }
     </style>
+
+    <style>
+        .historicontent {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .datapresensi {
+            margin-left: 10px;
+        }
+    </style>
 </head>
 
 <body style="background-color:#e9ecef;">

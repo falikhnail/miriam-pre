@@ -177,7 +177,8 @@
                 data: {
                     _token: "{{ csrf_token() }}",
                     image: image,
-                    lokasi: lokasi
+                    lokasi: lokasi,
+                    kode_jam_kerja: "{{ $kode_jam_kerja }}"
                 },
                 cache: false,
                 success: function(respond) {

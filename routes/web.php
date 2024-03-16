@@ -57,7 +57,8 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/proseslogout', [AuthController::class, 'proseslogout']);
 
     //Presensi
-    Route::get('/presensi/create', [PresensiController::class, 'create']);
+    Route::get('/presensi/{kode_jam_kerja}/create', [PresensiController::class, 'create']);
+    Route::get('/presensi/pilihjamkerja', [PresensiController::class, 'pilihjamkerja']);
     Route::post('/presensi/store', [PresensiController::class, 'store']);
     Route::get('/presensi/scanqr', [PresensiController::class, 'scanqr']);
     Route::post('/presensi/storeqr', [PresensiController::class, 'storeqr']);
@@ -142,6 +143,7 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::post('/karyawan/{nik}/update', [KaryawanController::class, 'update']);
     Route::post('/karyawan/{nik}/delete', [KaryawanController::class, 'delete']);
     Route::get('/karyawan/{nik}/lockandunlocklocation', [KaryawanController::class, 'lockandunlocklocation']);
+    Route::get('/karyawan/{nik}/lockandunlockjamkerja', [KaryawanController::class, 'lockandunlockjamkerja']);
     //Departemen
     Route::get('/departemen', [DepartemenController::class, 'index'])->middleware('permission:view-departemen,user');;
     Route::post('/departemen/store', [DepartemenController::class, 'store']);

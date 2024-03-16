@@ -199,4 +199,25 @@ class KaryawanController extends Controller
             return Redirect::back()->with(['warning' => 'Status Location Gagal Diupdate']);
         }
     }
+
+    public function lockandunlockjamkerja($nik)
+    {
+        try {
+            $karyawan = DB::table('karyawan')->where('nik', $nik)->first();
+            $status_jam_kerja = $karyawan->status_jam_kerja;
+            if ($status_jam_kerja == '1') {
+                DB::table('karyawan')->where('nik', $nik)->update([
+                    'status_jam_kerja' => '0'
+                ]);
+            } else {
+                DB::table('karyawan')->where('nik', $nik)->update([
+                    'status_jam_kerja' => '1'
+                ]);
+            }
+
+            return Redirect::back()->with(['success' => 'Status Jam Kerja Berhasil Diupdate']);
+        } catch (\Exception $e) {
+            return Redirect::back()->with(['warning' => 'Status Jam Kerja Gagal Diupdate']);
+        }
+    }
 }
