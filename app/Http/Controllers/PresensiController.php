@@ -184,7 +184,7 @@ class PresensiController extends Controller
                 echo 2;
                 // Jika Jam Kerja Harian Kosong
                 if ($jamkerja == null) {
-                    $jamkerja = DB::table('konfigurasi_jk_dept_detail')
+                    $jamkerja = DB::table('konfigurasi_jk_dept_detaild')
                         ->join('konfigurasi_jk_dept', 'konfigurasi_jk_dept_detail.kode_jk_dept', '=', 'konfigurasi_jk_dept.kode_jk_dept')
                         ->join('jam_kerja', 'konfigurasi_jk_dept_detail.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
                         ->where('kode_dept', $kode_dept)
