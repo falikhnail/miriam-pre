@@ -174,14 +174,14 @@ class PresensiController extends Controller
                 ->where('nik', $nik)
                 ->where('tanggal', $hariini)
                 ->first();
-
+            echo 1;
             //Jika Tidak Memiliki Jam Kerja By Date
             if ($jamkerja == null) {
                 //Cek Jam Kerja harian / Jam Kerja Khusus / Jam Kerja Per Orangannya
                 $jamkerja = DB::table('konfigurasi_jamkerja')
                     ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
                     ->where('nik', $nik)->where('hari', $namahari)->first();
-
+                echo 2;
                 // Jika Jam Kerja Harian Kosong
                 if ($jamkerja == null) {
                     $jamkerja = DB::table('konfigurasi_jk_dept_detail')
@@ -190,10 +190,12 @@ class PresensiController extends Controller
                         ->where('kode_dept', $kode_dept)
                         ->where('kode_cabang', $kode_cabang)
                         ->where('hari', $namahari)->first();
+                        echo 3;
                 }
             }
         } else {
             $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', $kode_jam_kerja)->first();
+            echo 4;
         }
 
         dd($jamkerja);
