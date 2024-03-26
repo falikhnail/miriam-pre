@@ -150,7 +150,7 @@ class PresensiController extends Controller
 
         $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
         $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
-        $tgl_presensi = $ceklintashari_presensi == 1 && $jamsekarang < "08:00" ? $tgl_sebelumnya : date("Y-m-d");
+        $tgl_presensi = $ceklintashari_presensi == 1 && $jamsekarang < "10:00" ? $tgl_sebelumnya : date("Y-m-d");
         $jam = date("H:i:s");
         $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
         $lok = explode(",", $lok_kantor->lokasi_cabang);
@@ -195,7 +195,6 @@ class PresensiController extends Controller
         } else {
             $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', $kode_jam_kerja)->first();
         }
-
 
 
         $presensi = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik);
