@@ -172,33 +172,31 @@ class PresensiController extends Controller
             $jamkerja = DB::table('konfigurasi_jamkerja_by_date')
                 ->join('jam_kerja', 'konfigurasi_jamkerja_by_date.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
                 ->where('nik', $nik)
-                ->where('tanggal', $hariini)
+                ->where('tanggal', $tgl_presensi)
                 ->first();
-            echo 1;
+
             //Jika Tidak Memiliki Jam Kerja By Date
             if ($jamkerja == null) {
                 //Cek Jam Kerja harian / Jam Kerja Khusus / Jam Kerja Per Orangannya
                 $jamkerja = DB::table('konfigurasi_jamkerja')
                     ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
                     ->where('nik', $nik)->where('hari', $namahari)->first();
-                echo 2;
+
                 // Jika Jam Kerja Harian Kosong
                 if ($jamkerja == null) {
-                    $jamkerja = DB::table('konfigurasi_jk_dept_detaild')
+                    $jamkerja = DB::table('konfigurasi_jk_dept_detail')
                         ->join('konfigurasi_jk_dept', 'konfigurasi_jk_dept_detail.kode_jk_dept', '=', 'konfigurasi_jk_dept.kode_jk_dept')
                         ->join('jam_kerja', 'konfigurasi_jk_dept_detail.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
                         ->where('kode_dept', $kode_dept)
                         ->where('kode_cabang', $kode_cabang)
                         ->where('hari', $namahari)->first();
-                        echo 3;
                 }
             }
         } else {
             $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', $kode_jam_kerja)->first();
-            echo 4;
         }
 
-        dd($jamkerja);
+
         $presensi = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik);
         $cek = $presensi->count();
         $datapresensi = $presensi->first();
