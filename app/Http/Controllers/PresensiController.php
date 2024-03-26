@@ -295,7 +295,7 @@ class PresensiController extends Controller
                         $response = curl_exec($curl);
 
                         curl_close($curl);
-                        echo $response;
+                        //echo $response;
                         Storage::put($file, $image_base64);
                     } else {
                         echo "error|Maaf Gagal absen, Hubungi Tim It|in";

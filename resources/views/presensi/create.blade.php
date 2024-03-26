@@ -183,7 +183,7 @@
                 cache: false,
                 success: function(respond) {
                     var status = respond.split("|");
-                    alert(respond);
+                    // alert(respond);
                     if (status[0] == "success") {
                         if (status[2] == "in") {
                             notifikasi_in.play();
