@@ -196,7 +196,7 @@ class PresensiController extends Controller
             $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', $kode_jam_kerja)->first();
         }
 
-
+        dd($jamkerja);
         $presensi = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik);
         $cek = $presensi->count();
         $datapresensi = $presensi->first();
