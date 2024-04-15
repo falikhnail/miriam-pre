@@ -58,15 +58,15 @@
         <table style="width: 100%">
             <tr>
                 <td style="width: 30px">
-                    <img src="{{ asset('assets/img/logopresensi.png') }}" width="70" height="70" alt="">
+                    <img src="{{ asset('assets/img/logopresensimiriam.png') }}" width="70" height="70" alt="">
                 </td>
                 <td>
                     <span id="title">
                         REKAP PRESENSI KARYAWAN<br>
                         PERIODE {{ strtoupper($namabulan[$bulan]) }} {{ $tahun }}<br>
-                        PT. ADAM ADIFA<br>
+                        Rumah Sakit Ibu dan Anak Miriam<br>
                     </span>
-                    <span><i>Jln. H. Dahlan No. 75, Kecamatan Sindangrasa, Kabupaten Ciamis</i></span>
+                    <span><i>Jln. Ahmad Yani. No. 58, Kecamatan Kota, Kabupaten Kudus</i></span>
                 </td>
             </tr>
         </table>
