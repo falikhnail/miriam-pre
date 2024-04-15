@@ -166,32 +166,32 @@
 
                         if($status == "i"){
                             $jml_izin += 1;
-                            $color = "#ffbb00";
+                            $color = "#ADD8E6";
                         }
 
                         if($status == "s"){
                             $jml_sakit += 1;
-                            $color = "#34a1eb";
+                            $color = "#FFC0CB";
                         }
 
                         if($status == "c"){
                             $jml_cuti += 1;
-                            $color = "#a600ff";
+                            $color = "#ffbb00";
                         }
 
 
                         if(empty($status) && empty($ceklibur) && $cekhari != 'Minggu'){
                             $jml_alpa += 1;
-                            $color = "red";
+                            $color = "#D3D3D3";
                         }
 
                         if(!empty($ceklibur)){
-                            $color = "green";
+                            $color = "red";
                         }
 
 
                         if($cekhari == "Minggu"){
-                            $color = "orange";
+                            $color = "red";
                         }
 
 
@@ -246,15 +246,15 @@
         <table width="100%" style="margin-top:100px">
             <tr>
                 <td></td>
-                <td style="text-align: center">Tasikmalaya, {{ date('d-m-Y') }}</td>
+                <td style="text-align: center">Kudus, {{ date('d-m-Y') }}</td>
             </tr>
             <tr>
                 <td style="text-align: center; vertical-align:bottom" height="100px">
-                    <u>Qiana Aqila</u><br>
-                    <i><b>HRD Manager</b></i>
+                    <u>Arief Ersan</u><br>
+                    <i><b>HRD</b></i>
                 </td>
                 <td style="text-align: center; vertical-align:bottom">
-                    <u>Daffa</u><br>
+                    <u>dr. Billie Sancho Thea</u><br>
                     <i><b>Direktur</b></i>
                 </td>
             </tr>
