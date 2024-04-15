@@ -20,7 +20,7 @@
         }
 
         .tabelpresensi {
-            width: 100%;
+            width: 4000px;
             margin-top: 20px;
             border-collapse: collapse;
         }
@@ -91,8 +91,8 @@
             </tr>
             @foreach ($rekap as $r)
                 <tr>
-                    <td>{{ $r->nik }}</td>
-                    <td>{{ $r->nama_lengkap }}</td>
+                    <td style="width:100px">{{ $r->nik }}</td>
+                    <td style="width:100px">{{ $r->nama_lengkap }}</td>
 
                     <?php
                     $jml_hadir = 0;
