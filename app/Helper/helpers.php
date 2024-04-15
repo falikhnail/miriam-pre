@@ -35,7 +35,7 @@ function hitungjamterlambatdesimal($jam_masuk, $jam_presensi)
     $mterlambat = $menitterlambat <= 9 ? "0" . $menitterlambat : $menitterlambat;
 
 
-    $desimalterlambat = ROUND(($menitterlambat / 60), 2);
+    $desimalterlambat = $jamterlambat + ROUND(($menitterlambat / 60), 2);
     return  $desimalterlambat;
 }
 
@@ -49,6 +49,37 @@ function hitunghari($tanggal_mulai, $tanggal_akhir)
     return $diff->days + 1;
 }
 
+
+function hitungdenda($jam_terlambat)
+{
+    $j_terlambat = explode(":", $jam_terlambat);
+    $jam = intval($j_terlambat[0]) * 1;
+    $menit = intval($j_terlambat[1]) * 1;
+
+    /*
+        Terlambat < 5 Menit = 0;
+        Terlambat 5 - 9 Menit = 5000;
+        Terlambat 10 - 14 Menit = 10000;
+        Terlambat 15 - 59 Menit = 15000;
+        Terlambat > 1 Jam = Upah Perjam ( Potongan Jam Kerja)
+    */
+
+    // if ($jam < 1) {
+    //     if ($menit >= 5 && $menit < 10) {
+    //         $denda = 5000;
+    //     } else if ($menit >= 10 && $menit < 15) {
+    //         $denda = 15000;
+    //     } else if ($menit >= 15) {
+    //         $denda = 15000;
+    //     } else {
+    //         $denda = 0;
+    //     }
+    // } else {
+    //     $denda = 0;
+    // }
+
+    // return $denda;
+}
 
 
 function buatkode($nomor_terakhir, $kunci, $jumlah_karakter = 0)
@@ -65,21 +96,54 @@ function buatkode($nomor_terakhir, $kunci, $jumlah_karakter = 0)
 }
 
 
-function hitungjamkerja($jam_masuk, $jam_pulang)
+function hitungjamkerja($tgl_presensi, $jam_mulai, $jam_pulang, $max_total_jam, $lintashari, $jam_awal_istirahat, $jam_akhir_istirahat)
 {
-    $j_masuk = strtotime($jam_masuk);
+
+    if ($lintashari == '1') {
+        $tgl_pulang = date('Y-m-d', strtotime("+1 days", strtotime($tgl_presensi)));
+    } else {
+        $tgl_pulang = $tgl_presensi;
+    }
+    $jam_mulai = $tgl_presensi . " " . $jam_mulai;
+    $jam_pulang = $tgl_pulang . " " . $jam_pulang;
+
+    if ($jam_awal_istirahat != "NA") {
+        $jam_awal_istirahat = $tgl_pulang . " " . $jam_awal_istirahat;
+        $jam_akhir_istirahat = $tgl_pulang . " " . $jam_akhir_istirahat;
+        if ($jam_pulang > $jam_awal_istirahat && $jam_pulang <= $jam_akhir_istirahat) {
+            $jam_pulang = $jam_awal_istirahat;
+        }
+    }
+
+    $j_mulai = strtotime($jam_mulai);
     $j_pulang = strtotime($jam_pulang);
-    $diff = $j_pulang - $j_masuk;
+    $diff = $j_pulang - $j_mulai;
     if (empty($j_pulang)) {
         $jam = 0;
         $menit = 0;
     } else {
-        $jam = floor($diff / (60 * 60));
+        $jam = floor($diff / (60 * 60)); //DIkurang 1 Jam jam Istirahat
         $m = $diff - $jam * (60 * 60);
         $menit = floor($m / 60);
     }
 
-    return $jam . ":" . $menit;
+    $menitdesimal = ROUND($menit / 60, 2);
+    /*
+    Jika Karyawan Pulang Setelah Jam Isitrahat Maka Total Jam Kerja dikurang 1 Jam  Jika
+    Kurang dari Jam Istirahat Tidak DI kurangi 1 Jam */
+    if ($jam_awal_istirahat != "NA") {
+        if ($jam_pulang > $jam_akhir_istirahat) {
+            $jam_istirahat = 1;
+        } else {
+            $jam_istirahat = 0;
+        }
+    } else {
+        $jam_istirahat = 0;
+    }
+
+    $jamdesimal = $jam - $jam_istirahat  + $menitdesimal;
+    $totaljam = $jamdesimal > $max_total_jam ? $max_total_jam : $jamdesimal;
+    return  $totaljam;
 }
 
 

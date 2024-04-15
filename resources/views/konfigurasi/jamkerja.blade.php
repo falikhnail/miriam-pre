@@ -62,7 +62,11 @@
                                                 <th>Jam Masuk</th>
                                                 <th>Akhir Jam Masuk</th>
                                                 <th>Jam Pulang</th>
+                                                <th>Total Jam</th>
                                                 <th>Lintas Hari</th>
+                                                <th>Istirahat</th>
+                                                <th>Awal Istirahat</th>
+                                                <th>Akhir Istirahat</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -75,7 +79,9 @@
                                                     <td>{{ $d->awal_jam_masuk }}</td>
                                                     <td>{{ $d->jam_masuk }}</td>
                                                     <td>{{ $d->akhir_jam_masuk }}</td>
+
                                                     <td>{{ $d->jam_pulang }}</td>
+                                                    <td class="text-center">{{ $d->total_jam }}</td>
                                                     <td>
                                                         @if ($d->lintashari == 1)
                                                             <span class="badge bg-success">
@@ -106,13 +112,44 @@
                                                         @endif
                                                     </td>
                                                     <td>
+                                                        @if ($d->status_istirahat == 1)
+                                                            <span class="badge bg-success">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    class="icon icon-tabler icon-tabler-square-check-filled"
+                                                                    width="24" height="24" viewBox="0 0 24 24"
+                                                                    stroke-width="2" stroke="currentColor" fill="none"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                                    <path
+                                                                        d="M18.333 2c1.96 0 3.56 1.537 3.662 3.472l.005 .195v12.666c0 1.96 -1.537 3.56 -3.472 3.662l-.195 .005h-12.666a3.667 3.667 0 0 1 -3.662 -3.472l-.005 -.195v-12.666c0 -1.96 1.537 -3.56 3.472 -3.662l.195 -.005h12.666zm-2.626 7.293a1 1 0 0 0 -1.414 0l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.32 1.497l2 2l.094 .083a1 1 0 0 0 1.32 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z"
+                                                                        stroke-width="0" fill="currentColor" />
+                                                                </svg>
+                                                            </span>
+                                                        @else
+                                                            <span class="badge bg-danger">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    class="icon icon-tabler icon-tabler-square-rounded-x-filled"
+                                                                    width="24" height="24" viewBox="0 0 24 24"
+                                                                    stroke-width="2" stroke="currentColor" fill="none"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                                    <path
+                                                                        d="M12 2l.324 .001l.318 .004l.616 .017l.299 .013l.579 .034l.553 .046c4.785 .464 6.732 2.411 7.196 7.196l.046 .553l.034 .579c.005 .098 .01 .198 .013 .299l.017 .616l.005 .642l-.005 .642l-.017 .616l-.013 .299l-.034 .579l-.046 .553c-.464 4.785 -2.411 6.732 -7.196 7.196l-.553 .046l-.579 .034c-.098 .005 -.198 .01 -.299 .013l-.616 .017l-.642 .005l-.642 -.005l-.616 -.017l-.299 -.013l-.579 -.034l-.553 -.046c-4.785 -.464 -6.732 -2.411 -7.196 -7.196l-.046 -.553l-.034 -.579a28.058 28.058 0 0 1 -.013 -.299l-.017 -.616c-.003 -.21 -.005 -.424 -.005 -.642l.001 -.324l.004 -.318l.017 -.616l.013 -.299l.034 -.579l.046 -.553c.464 -4.785 2.411 -6.732 7.196 -7.196l.553 -.046l.579 -.034c.098 -.005 .198 -.01 .299 -.013l.616 -.017c.21 -.003 .424 -.005 .642 -.005zm-1.489 7.14a1 1 0 0 0 -1.218 1.567l1.292 1.293l-1.292 1.293l-.083 .094a1 1 0 0 0 1.497 1.32l1.293 -1.292l1.293 1.292l.094 .083a1 1 0 0 0 1.32 -1.497l-1.292 -1.293l1.292 -1.293l.083 -.094a1 1 0 0 0 -1.497 -1.32l-1.293 1.292l-1.293 -1.292l-.094 -.083z"
+                                                                        fill="currentColor" stroke-width="0" />
+                                                                </svg>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $d->awal_jam_istirahat }}</td>
+                                                    <td>{{ $d->akhir_jam_istirahat }}</td>
+                                                    <td>
                                                         <div class="btn-group">
                                                             <a href="#" class="edit btn btn-info btn-sm"
                                                                 kode_jam_kerja="{{ $d->kode_jam_kerja }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    class="icon icon-tabler icon-tabler-edit" width="24"
-                                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                                    stroke="currentColor" fill="none"
+                                                                    class="icon icon-tabler icon-tabler-edit"
+                                                                    width="24" height="24" viewBox="0 0 24 24"
+                                                                    stroke-width="2" stroke="currentColor" fill="none"
                                                                     stroke-linecap="round" stroke-linejoin="round">
                                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none">
                                                                     </path>
@@ -285,6 +322,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="input-icon mb-3">
@@ -303,6 +341,80 @@
                                     </span>
                                     <input type="text" value="" id="jam_pulang" class="form-control"
                                         placeholder="Jam Pulang" name="jam_pulang">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="input-icon mb-3">
+                                    <span class="input-icon-addon">
+                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alarm"
+                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                            stroke="currentColor" fill="none" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                                            <path d="M12 10l0 3l2 0"></path>
+                                            <path d="M7 4l-2.75 2"></path>
+                                            <path d="M17 4l2.75 2"></path>
+                                        </svg>
+                                    </span>
+                                    <input type="text" value="" id="total_jam" class="form-control"
+                                        placeholder="Total Jam" name="total_jam">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <select name="status_istirahat" id="status_istirahat" class="form-select">
+                                        <option value="">Istirahat</option>
+                                        <option value="1">Ada</option>
+                                        <option value="0">Tidak</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row setjamistirahat">
+                            <div class="col-12">
+                                <div class="input-icon mb-3">
+                                    <span class="input-icon-addon">
+                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alarm"
+                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                            stroke="currentColor" fill="none" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                                            <path d="M12 10l0 3l2 0"></path>
+                                            <path d="M7 4l-2.75 2"></path>
+                                            <path d="M17 4l2.75 2"></path>
+                                        </svg>
+                                    </span>
+                                    <input type="text" value="" id="awal_jam_istirahat" class="form-control"
+                                        placeholder="Awal Jam Istirahat" name="awal_jam_istirahat">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row setjamistirahat">
+                            <div class="col-12">
+                                <div class="input-icon mb-3">
+                                    <span class="input-icon-addon">
+                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alarm"
+                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                            stroke="currentColor" fill="none" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                                            <path d="M12 10l0 3l2 0"></path>
+                                            <path d="M7 4l-2.75 2"></path>
+                                            <path d="M17 4l2.75 2"></path>
+                                        </svg>
+                                    </span>
+                                    <input type="text" value="" id="akhir_jam_istirahat" class="form-control"
+                                        placeholder="Akhir Jam Istirahat" name="akhir_jam_istirahat">
                                 </div>
                             </div>
                         </div>
@@ -363,7 +475,22 @@
     <script>
         $(function() {
 
-            $("#awal_jam_masuk, #jam_masuk, #akhir_jam_masuk, #jam_pulang").mask("00:00");
+            function showsetjamistirahat() {
+                var status_istirahat = $("#status_istirahat").val();
+                if (status_istirahat == "1") {
+                    $(".setjamistirahat").show();
+                } else {
+                    $(".setjamistirahat").hide();
+                }
+            }
+
+            $("#status_istirahat").change(function() {
+                showsetjamistirahat();
+            });
+            showsetjamistirahat();
+
+            $("#awal_jam_masuk, #jam_masuk, #akhir_jam_masuk, #jam_pulang,#awal_jam_istirahat,#akhir_jam_istirahat")
+                .mask("00:00");
 
             $("#btnTambahJK").click(function() {
                 $("#modal-inputjk").modal("show");
@@ -396,8 +523,12 @@
                 var awal_jam_masuk = $("#awal_jam_masuk").val();
                 var jam_masuk = $("#jam_masuk").val();
                 var akhir_jam_masuk = $("#akhir_jam_masuk").val();
+                var awal_jam_istirahat = $("#awal_jam_istirahat").val();
+                var akhir_jam_istirahat = $("#akhir_jam_istirahat").val();
                 var jam_pulang = $("#jam_pulang").val();
+                var total_jam = $("#total_jam").val();
                 var lintashari = $("#lintashari").val();
+                var status_istirahat = $("#status_istirahat").val();
                 if (kode_jam_kerja == "") {
                     // alert('Nik Harus Diisi');
                     Swal.fire({
@@ -458,6 +589,42 @@
                     });
 
                     return false;
+                } else if (status_istirahat === "") {
+
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Status Istirahat Harus Diisi !',
+                        icon: 'warning',
+                        confirmButtonText: 'Ok'
+                    }).then((result) => {
+                        $("#status_istirahat").focus();
+                    });
+
+                    return false;
+                } else if (awal_jam_istirahat == "" && status_istirahat == "1") {
+
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Jam Awal Istirahat Harus Diisi !',
+                        icon: 'warning',
+                        confirmButtonText: 'Ok'
+                    }).then((result) => {
+                        $("#awal_jam_istirahat").focus();
+                    });
+
+                    return false;
+                } else if (akhir_jam_istirahat == "" && status_istirahat == "1") {
+                    // alert('Nik Harus Diisi');
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Jam Akhir Istirahat Harus Diisi !',
+                        icon: 'warning',
+                        confirmButtonText: 'Ok'
+                    }).then((result) => {
+                        $("#akhir_jam_istirahat").focus();
+                    });
+
+                    return false;
                 } else if (jam_pulang == "") {
                     // alert('Nik Harus Diisi');
                     Swal.fire({
@@ -467,6 +634,18 @@
                         confirmButtonText: 'Ok'
                     }).then((result) => {
                         $("#jam_pulang").focus();
+                    });
+
+                    return false;
+                } else if (total_jam == "") {
+                    // alert('Nik Harus Diisi');
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Total Jam Harus Diisi !',
+                        icon: 'warning',
+                        confirmButtonText: 'Ok'
+                    }).then((result) => {
+                        $("#total_jam").focus();
                     });
 
                     return false;

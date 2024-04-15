@@ -172,7 +172,7 @@ class PresensiController extends Controller
             $jamkerja = DB::table('konfigurasi_jamkerja_by_date')
                 ->join('jam_kerja', 'konfigurasi_jamkerja_by_date.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
                 ->where('nik', $nik)
-                ->where('tanggal', $tgl_presensi) 
+                ->where('tanggal', $tgl_presensi)
                 ->first();
 
             //Jika Tidak Memiliki Jam Kerja By Date
@@ -638,7 +638,11 @@ class PresensiController extends Controller
             IFNULL(jam_masuk,'NA'),'|',
             IFNULL(jam_pulang,'NA'),'|',
             IFNULL(presensi.kode_izin,'NA'),'|',
-            IFNULL(keterangan,'NA'),'|'
+            IFNULL(keterangan,'NA'),'|',
+            IFNULL(total_jam,'NA'),'|',
+            IFNULL(lintashari,'NA'),'|',
+            IFNULL(awal_jam_istirahat,'NA'),'|',
+            IFNULL(akhir_jam_istirahat,'NA'),'|'
             ),NULL)) as tgl_" . $i . ",";
 
             $field_date .= "tgl_" . $i . ",";
@@ -701,7 +705,14 @@ class PresensiController extends Controller
             // Mendefinisikan nama file ekspor "hasil-export.xls"
             header("Content-Disposition: attachment; filename=Rekap Presensi Karyawan $time.xls");
         }
-        return view('presensi.cetakrekap', compact('bulan', 'tahun', 'namabulan', 'rekap', 'rangetanggal', 'jmlhari', 'datalibur', 'harilibur'));
+
+        $data = ['bulan', 'tahun', 'namabulan', 'rekap', 'rangetanggal', 'jmlhari', 'datalibur', 'harilibur'];
+
+        if ($request->jenis_laporan == 1) {
+            return view('presensi.cetakrekap', compact($data));
+        } else if ($request->jenis_laporan == 2) {
+            return view('presensi.cetakrekap_detail', compact($data));
+        }
     }
 
     public function izinsakit(Request $request)
