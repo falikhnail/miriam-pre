@@ -197,9 +197,9 @@
 
 
                 ?>
-                    <td style="background-color: {{ $color }}">
+                    <td style="background-color: {{ $color }}; width: {{ $status == 'h' ? '150px' : '0px' }}">
                         @if ($status == 'h')
-                            <span style="font-weight: bold">
+                            <span style="font-weight: bold;">
                                 {{ $nama_jam_kerja }}
                             </span>
                             <br>
@@ -216,11 +216,11 @@
                             </span>
                             <br>
                             @if ($terlambat_desimal > 0)
-                                <span style="color:red ">
-                                    Terlambat : {{ $terlambat }} ({{ $terlambat_desimal }})
-                                    <br>
-                                    {{-- Denda : {{ $denda }} penambahan denda ada disini --}}
-                                </span>
+                            <span style="color:red; text-align: right">
+                                Telat : {{ $terlambat }} ({{ $terlambat_desimal }})
+                                {{-- <br> --}}
+                                {{-- Denda : {{ $denda }} --}}
+                            </span>
                             @endif
                         @endif
 
