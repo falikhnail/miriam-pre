@@ -91,8 +91,8 @@
             </tr>
             @foreach ($rekap as $r)
                 <tr>
-                    <td style="width:100px">{{ $r->nik }}</td>
-                    <td style="width:100px">{{ $r->nama_lengkap }}</td>
+                    <td style="width:150px">{{ $r->nik }}</td>
+                    <td style="width:150px">{{ $r->nama_lengkap }}</td>
 
                     <?php
                     $jml_hadir = 0;
@@ -218,7 +218,7 @@
                             @if ($terlambat_desimal > 0)
                             <span style="color:red; text-align: right">
                                 Telat : {{ $terlambat }} ({{ $terlambat_desimal }})
-                                {{-- <br> --}}
+                                <br>
                                 {{-- Denda : {{ $denda }} --}}
                             </span>
                             @endif
