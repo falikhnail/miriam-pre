@@ -91,7 +91,7 @@
             </tr>
             @foreach ($rekap as $r)
                 <tr>
-                    <td style="width:150px">{{ $r->nik }}</td>
+                    <td style="width:100px">{{ $r->nik }}</td>
                     <td style="width:150px">{{ $r->nama_lengkap }}</td>
 
                     <?php
