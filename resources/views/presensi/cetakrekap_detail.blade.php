@@ -217,7 +217,7 @@
                             <br>
                             @if ($terlambat_desimal > 0)
                             <span style="color:red; text-align: right">
-                                Telat : {{ $terlambat }} ({{ $terlambat_desimal }})
+                                Terlambat : {{ $terlambat }} ({{ $terlambat_desimal }})
                                 <br>
                                 {{-- Denda : {{ $denda }} --}}
                             </span>
