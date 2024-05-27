@@ -134,7 +134,25 @@
                     @php
                         $path_in = Storage::url('uploads/absensi/' . $d->foto_in);
                         $path_out = Storage::url('uploads/absensi/' . $d->foto_out);
-                        $jamterlambat = hitungjamkerja($d->jam_masuk, $d->jam_in);
+                        $terlambat = hitungjamterlambat($d->jam_masuk, $d->jam_in);
+                        $terlambat_desimal = hitungjamterlambatdesimal($d->jam_masuk, $d->jam_in);
+                        $j_terlambat = explode(':', $terlambat);
+                        $jam_terlambat = intVal($j_terlambat[0]);
+                        if ($jam_terlambat < 1) {
+                            $jam_mulai = $d->jam_masuk;
+                        } else {
+                            $jam_mulai = $d->jam_in > $d->jam_masuk ? $d->jam_in : $d->jam_masuk;
+                        }
+                        $jam_berakhir = $d->jam_out > $d->jam_pulang ? $d->jam_pulang : $d->jam_out;
+                        $total_jam = hitungjamkerja(
+                            $d->tgl_presensi,
+                            date('H:i', strtotime($jam_mulai)),
+                            date('H:i', strtotime($jam_berakhir)),
+                            $d->total_jam,
+                            $d->lintashari,
+                            date('H:i', strtotime($d->awal_jam_istirahat)),
+                            date('H:i', strtotime($d->akhir_jam_istirahat)),
+                        );
                     @endphp
                     <tr>
                         <td>{{ $loop->iteration }}</td>
@@ -152,27 +170,13 @@
                         <td style="text-align: center">{{ $d->status }}</td>
                         <td>
                             @if ($d->jam_in > $d->jam_masuk)
-                                Terlambat {{ $jamterlambat }}
+                                Terlambat {{ $terlambat_desimal }} Jam
                             @else
                                 Tepat Waktu
                             @endif
                         </td>
                         <td>
-                            @if ($d->jam_out != null)
-                                @php
-                                    $tgl_masuk = $d->tgl_presensi;
-                                    $tgl_pulang = $d->lintashari == 1 ? date('Y-m-d', strtotime('+1 days', strtotime($tgl_masuk))) : $tgl_masuk;
-                                    $jam_masuk = $tgl_masuk . ' ' . $d->jam_in;
-                                    $jam_pulang = $tgl_pulang . ' ' . $d->jam_out;
-
-                                    $jmljamkerja = hitungjamkerja($jam_masuk, $jam_pulang);
-                                @endphp
-                            @else
-                                @php
-                                    $jmljamkerja = 0;
-                                @endphp
-                            @endif
-                            {{ $jmljamkerja }}
+                            {{ $total_jam }}
                         </td>
                     </tr>
                 @else

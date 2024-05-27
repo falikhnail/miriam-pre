@@ -96,7 +96,7 @@ function buatkode($nomor_terakhir, $kunci, $jumlah_karakter = 0)
 }
 
 
-function hitungjamkerja($tgl_presensi, $jam_mulai, $jam_pulang, $max_total_jam, $lintashari, $jam_awal_istirahat, $jam_akhir_istirahat)
+function hitungjamkerja($tgl_presensi, $jam_mulai, $jam_berakhir, $max_total_jam, $lintashari, $jam_awal_istirahat, $jam_akhir_istirahat)
 {
 
     if ($lintashari == '1') {
@@ -105,7 +105,7 @@ function hitungjamkerja($tgl_presensi, $jam_mulai, $jam_pulang, $max_total_jam, 
         $tgl_pulang = $tgl_presensi;
     }
     $jam_mulai = $tgl_presensi . " " . $jam_mulai;
-    $jam_pulang = $tgl_pulang . " " . $jam_pulang;
+    $jam_pulang = !empty($jam_berakhir) ? $tgl_pulang . " " . $jam_berakhir : "";
 
     if ($jam_awal_istirahat != "NA") {
         $jam_awal_istirahat = $tgl_pulang . " " . $jam_awal_istirahat;
@@ -143,7 +143,7 @@ function hitungjamkerja($tgl_presensi, $jam_mulai, $jam_pulang, $max_total_jam, 
 
     $jamdesimal = $jam - $jam_istirahat  + $menitdesimal;
     $totaljam = $jamdesimal > $max_total_jam ? $max_total_jam : $jamdesimal;
-    return  $totaljam;
+    return  empty($jam_pulang) ? 0 : $totaljam;
 }
 
 
