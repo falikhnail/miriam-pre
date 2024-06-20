@@ -920,28 +920,65 @@ class PresensiController extends Controller
         $jam_out = $status == "a" ? NULL : $request->jam_out;
         $kode_jam_kerja = $status == "a" ? NULL : $request->kode_jam_kerja;
 
+        if ($request->hasFile('foto_in')) {
+            $foto_in = $nik."-" .$tanggal."-in". "." . $request->file('foto_in')->getClientOriginalExtension();
+        } else {
+            $foto_in = null;
+        }
+
+        if ($request->hasFile('foto_out')) {
+            $foto_out = $nik."-" .$tanggal."-out". "." . $request->file('foto_out')->getClientOriginalExtension();
+        } else {
+            $foto_out = null;
+        }
+
         try {
 
             $cekpresensi = DB::table('presensi')->where('nik', $nik)->where('tgl_presensi', $tanggal)->count();
             if ($cekpresensi > 0) {
-                DB::table('presensi')
+            $simpan =  DB::table('presensi')
                     ->where('nik', $nik)
                     ->where('tgl_presensi', $tanggal)
                     ->update([
                         'jam_in' => $jam_in,
+                        'foto_in' => $foto_in,
+                        'foto_out' => $foto_out,
                         'jam_out' => $jam_out,
                         'kode_jam_kerja' => $kode_jam_kerja,
                         'status' => $status
                     ]);
+                    if ($request->hasFile('foto_in')) {
+                        $folderPath = "public/uploads/absensi/";
+                        $request->file('foto_in')->storeAs($folderPath, $foto_in);
+                    }
+
+                    if ($request->hasFile('foto_out')) {
+                        $folderPath = "public/uploads/absensi/";
+                        $request->file('foto_out')->storeAs($folderPath, $foto_out);
+                    }
             } else {
-                DB::table('presensi')->insert([
+                $simpan = DB::table('presensi')->insert([
                     'nik' => $nik,
                     'tgl_presensi' => $tanggal,
                     'jam_in' => $jam_in,
+                    'foto_in' => $foto_in,
+                    'foto_out' => $foto_out,
                     'jam_out' => $jam_out,
                     'kode_jam_kerja' => $kode_jam_kerja,
                     'status' => $status
                 ]);
+
+                if ($simpan) {
+                    if ($request->hasFile('foto_in')) {
+                        $folderPath = "public/uploads/absensi/";
+                        $request->file('foto_in')->storeAs($folderPath, $foto_in);
+                    }
+
+                    if ($request->hasFile('foto_out')) {
+                        $folderPath = "public/uploads/absensi/";
+                        $request->file('foto_out')->storeAs($folderPath, $foto_out);
+                    }
+                }
             }
 
 

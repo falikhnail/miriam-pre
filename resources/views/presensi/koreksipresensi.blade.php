@@ -1,4 +1,4 @@
-<form action="/storekoreksipresensi" method="POST" id="formKoreksipresensi">
+<form action="/storekoreksipresensi" method="POST" id="formKoreksipresensi" enctype="multipart/form-data">
     @csrf
     <input type="hidden" name="nik" value="{{ $karyawan->nik }}">
     <input type="hidden" name="tanggal" value="{{ $tanggal }}">
@@ -54,6 +54,11 @@
             </div>
         </div>
     </div>
+    <div class="row mb-2">
+        <div class="col-12">
+            <input type="file" name="foto_in" class="form-control" placeholder="Foto Masuk">
+        </div>
+    </div>
     <div class="row mb-2" id="frm_jam_out">
         <div class="col-12">
             <div class="input-icon">
@@ -72,6 +77,11 @@
                 <input type="text" id="jam_out" value="{{ $presensi != null ? $presensi->jam_out : '' }}"
                     class="form-control" placeholder="Jam Pulang" name="jam_out">
             </div>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-12">
+            <input type="file" name="foto_out" class="form-control" placeholder="Foto Pulang">
         </div>
     </div>
     <div class="row mb-2" id="frm_kode_jam_kerja">
