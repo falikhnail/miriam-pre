@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Karyawan;
 use App\Models\Pengajuanizin;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -12,6 +13,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class PresensiController extends Controller
 {
@@ -55,6 +62,84 @@ class PresensiController extends Controller
         }
 
         return $hari_ini;
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $query = \DB::table('pengajuan_izin')
+            ->join('karyawan', 'pengajuan_izin.nik', '=', 'karyawan.nik');
+
+        // Terapkan filter dari form pencarian
+        if ($request->has('dari') && $request->has('sampai')) {
+            $query->whereBetween('pengajuan_izin.tanggal', [$request->dari, $request->sampai]);
+        }
+        if ($request->has('nik')) {
+            $query->where('karyawan.nik', $request->nik);
+        }
+        if ($request->has('nama_lengkap')) {
+            $query->where('karyawan.nama_lengkap', 'like', '%' . $request->nama_lengkap . '%');
+        }
+        if ($request->has('kode_cabang')) {
+            $query->where('karyawan.kode_cabang', $request->kode_cabang);
+        }
+        if ($request->has('kode_dept')) {
+            $query->where('karyawan.kode_dept', $request->kode_dept);
+        }
+        if ($request->has('status_approved')) {
+            $query->where('pengajuan_izin.status_approved', $request->status_approved);
+        }
+
+        $data = $query->select('pengajuan_izin.*', 'karyawan.nama_lengkap', 'karyawan.jabatan', 'karyawan.kode_cabang', 'karyawan.kode_dept')->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set header
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'NIK');
+        $sheet->setCellValue('C1', 'Nama');
+        $sheet->setCellValue('D1', 'Jabatan');
+        $sheet->setCellValue('E1', 'Cabang');
+        $sheet->setCellValue('F1', 'Departemen');
+        $sheet->setCellValue('G1', 'Tanggal Izin Dari');
+        $sheet->setCellValue('H1', 'Tanggal Izin Sampai');
+        $sheet->setCellValue('I1', 'Alasan');
+        $sheet->setCellValue('J1', 'Keterangan');
+        $sheet->setCellValue('K1', 'Status');
+
+        // Set data
+        $row = 2;
+        foreach ($data as $index => $item) {
+            $sheet->setCellValue('A' . $row, $index + 1);
+            $sheet->setCellValue('B' . $row, $item->nik);
+            $sheet->setCellValue('C' . $row, $item->nama_lengkap);
+            $sheet->setCellValue('D' . $row, $item->jabatan);
+            $sheet->setCellValue('E' . $row, $item->kode_cabang);
+            $sheet->setCellValue('F' . $row, $item->kode_dept);
+            $sheet->setCellValue('G' . $row, $item->tgl_izin_dari);
+            $sheet->setCellValue('H' . $row, $item->tgl_izin_sampai);
+            $sheet->setCellValue(
+                'I' . $row,
+                $item->status == 'i' ? 'Izin' : ($item->status == 'c' ? 'Cuti' : 'Sakit')
+            );
+
+            $sheet->setCellValue('J' . $row, $item->keterangan);
+            $sheet->setCellValue('K' . $row, $item->status_approved ? 'Disetujui' : 'Pending');
+            $row++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+
+        // Nama file
+        $fileName = 'pengajuan_izin_' . date('YmdHis') . '.xlsx';
+
+        // Headers untuk download
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
     }
 
 
@@ -717,64 +802,207 @@ class PresensiController extends Controller
 
     public function izinsakit(Request $request)
     {
-
         $kode_dept = Auth::guard('user')->user()->kode_dept;
         $kode_cabang = Auth::guard('user')->user()->kode_cabang;
         $user = User::find(Auth::guard('user')->user()->id);
 
-        $query = Pengajuanizin::query();
-        $query->select(
-            'kode_izin',
-            'tgl_izin_dari',
-            'tgl_izin_sampai',
-            'pengajuan_izin.nik',
-            'nama_lengkap',
-            'jabatan',
-            'status',
-            'status_approved',
-            'keterangan',
-            'karyawan.kode_cabang',
-            'karyawan.kode_dept',
-            'doc_sid'
-        );
-        $query->join('karyawan', 'pengajuan_izin.nik', '=', 'karyawan.nik');
-        if (!empty($request->dari) && !empty($request->sampai)) {
-            $query->whereBetween('tgl_izin_dari', [$request->dari, $request->sampai]);
+        if ($request->action == 'cetak') {
+            $query = \DB::table('pengajuan_izin')
+                ->join('karyawan AS karyawan_main', 'pengajuan_izin.nik', '=', 'karyawan_main.nik');
+
+            if (!empty($request->dari) && !empty($request->sampai)) {
+                $query->whereBetween('tgl_izin_dari', [$request->dari, $request->sampai]);
+            }
+
+            if (!empty($request->nik)) {
+                $query->where('pengajuan_izin.nik', $request->nik);
+            }
+
+            if (!empty($request->nama_lengkap)) {
+                $query->where('karyawan_main.nama_lengkap', 'like', '%' . $request->nama_lengkap . '%');
+            }
+
+            if ($request->status_approved === '0' || $request->status_approved === '1' || $request->status_approved === '2') {
+                $query->where('status_approved', $request->status_approved);
+            }
+
+            if ($user->hasRole('admin departemen')) {
+                $query->where('karyawan_main.kode_dept', $kode_dept);
+                $query->where('karyawan_main.kode_cabang', $kode_cabang);
+            }
+
+            if (!empty($request->kode_cabang)) {
+                $query->where('karyawan_main.kode_cabang', $request->kode_cabang);
+            }
+
+            if (!empty($request->kode_dept)) {
+                $query->where('karyawan_main.kode_dept', $request->kode_dept);
+            }
+
+            $data = $query->select('pengajuan_izin.*', 'karyawan_main.nama_lengkap', 'karyawan_main.jabatan', 'karyawan_main.kode_cabang', 'karyawan_main.kode_dept')->get();
+
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Set header
+            $sheet->setCellValue('A1', 'No');
+            $sheet->setCellValue('B1', 'NIK');
+            $sheet->setCellValue('C1', 'Nama');
+            $sheet->setCellValue('D1', 'Jabatan');
+            $sheet->setCellValue('E1', 'Cabang');
+            $sheet->setCellValue('F1', 'Departemen');
+            $sheet->setCellValue('G1', 'Tanggal Izin Dari');
+            $sheet->setCellValue('H1', 'Tanggal Izin Sampai');
+            $sheet->setCellValue('I1', 'Alasan');
+            $sheet->setCellValue('J1', 'Keterangan');
+            $sheet->setCellValue('K1', 'Status');
+
+            // Set data
+            $row = 2;
+            foreach ($data as $index => $item) {
+                $sheet->setCellValue('A' . $row, $index + 1);
+                $sheet->setCellValue('B' . $row, $item->nik);
+                $sheet->setCellValue('C' . $row, $item->nama_lengkap);
+                $sheet->setCellValue('D' . $row, $item->jabatan);
+                $sheet->setCellValue('E' . $row, $item->kode_cabang);
+                $sheet->setCellValue('F' . $row, $item->kode_dept);
+                $sheet->setCellValue('G' . $row, $item->tgl_izin_dari);
+                $sheet->setCellValue('H' . $row, $item->tgl_izin_sampai);
+                $sheet->setCellValue(
+                    'I' . $row,
+                    $item->status == 'i' ? 'Izin' : ($item->status == 'c' ? 'Cuti' : 'Sakit')
+                );
+
+                $sheet->setCellValue('J' . $row, $item->keterangan);
+                $sheet->setCellValue('K' . $row, $item->status_approved ? 'Disetujui' : 'Pending');
+                $row++;
+            }
+
+            $writer = new Xlsx($spreadsheet);
+
+            // Nama file
+            $fileName = 'pengajuan_izin_' . date('YmdHis') . '.xlsx';
+
+            // Headers untuk download
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="' . $fileName . '"');
+            header('Cache-Control: max-age=0');
+
+            $writer->save('php://output');
+            exit;
+        } else {
+            // Bagian untuk menampilkan data
+            $query = Pengajuanizin::query();
+            $query->select(
+                'kode_izin',
+                'tgl_izin_dari',
+                'tgl_izin_sampai',
+                'pengajuan_izin.nik',
+                'nama_lengkap',
+                'jabatan',
+                'status',
+                'status_approved',
+                'keterangan',
+                'karyawan.kode_cabang',
+                'karyawan.kode_dept',
+                'doc_sid'
+            );
+            $query->join('karyawan AS karyawan', 'pengajuan_izin.nik', '=', 'karyawan.nik');
+
+            if (!empty($request->dari) && !empty($request->sampai)) {
+                $query->whereBetween('tgl_izin_dari', [$request->dari, $request->sampai]);
+            }
+
+            if (!empty($request->nik)) {
+                $query->where('pengajuan_izin.nik', $request->nik);
+            }
+
+            if (!empty($request->nama_lengkap)) {
+                $query->where('nama_lengkap', 'like', '%' . $request->nama_lengkap . '%');
+            }
+
+            if ($request->status_approved === '0' || $request->status_approved === '1' || $request->status_approved === '2') {
+                $query->where('status_approved', $request->status_approved);
+            }
+
+            if ($user->hasRole('admin departemen')) {
+                $query->where('karyawan.kode_dept', $kode_dept);
+                $query->where('karyawan.kode_cabang', $kode_cabang);
+            }
+
+            if (!empty($request->kode_cabang)) {
+                $query->where('karyawan.kode_cabang', $request->kode_cabang);
+            }
+
+            if (!empty($request->kode_dept)) {
+                $query->where('karyawan.kode_dept', $request->kode_dept);
+            }
+
+            $query->orderBy('tgl_izin_dari', 'desc');
+            $izinsakit = $query->paginate(10);
+            $izinsakit->appends($request->all());
+
+            $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+            $departemen = DB::table('departemen')->orderBy('kode_dept')->get();
+            return view('presensi.izinsakit', compact('izinsakit', 'cabang', 'departemen'));
         }
-
-        if (!empty($request->nik)) {
-            $query->where('pengajuan_izin.nik', $request->nik);
-        }
-
-        if (!empty($request->nama_lengkap)) {
-            $query->where('nama_lengkap', 'like', '%' . $request->nama_lengkap . '%');
-        }
-
-        if ($request->status_approved === '0' || $request->status_approved === '1' || $request->status_approved === '2') {
-            $query->where('status_approved', $request->status_approved);
-        }
-
-        if ($user->hasRole('admin departemen')) {
-            $query->where('karyawan.kode_dept', $kode_dept);
-            $query->where('karyawan.kode_cabang', $kode_cabang);
-        }
-
-        if (!empty($request->kode_cabang)) {
-            $query->where('karyawan.kode_cabang', $request->kode_cabang);
-        }
-
-        if (!empty($request->kode_dept)) {
-            $query->where('karyawan.kode_dept', $request->kode_dept);
-        }
-
-        $query->orderBy('tgl_izin_dari', 'desc');
-        $izinsakit = $query->paginate(10);
-        $izinsakit->appends($request->all());
-
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
-        $departemen = DB::table('departemen')->orderBy('kode_dept')->get();
-        return view('presensi.izinsakit', compact('izinsakit', 'cabang', 'departemen'));
     }
+
+
+    public function importData(Request $request)
+    {
+        // Validasi file input
+        $request->validate([
+            'file' => 'required|mimes:xlsx'
+        ]);
+
+        // Ambil file dari request
+        $file = $request->file('file');
+
+        // Load file menggunakan PhpSpreadsheet
+        $spreadsheet = IOFactory::load($file->getPathname());
+        $worksheet = $spreadsheet->getActiveSheet();
+        $rows = $worksheet->toArray();
+
+        // Hapus header baris pertama
+        array_shift($rows);
+
+        // Loop melalui data dan simpan ke database
+        foreach ($rows as $row) {
+            // Ambil data dari baris
+            $tgl_izin_dari = $row[0];
+            $bulan = date("m", strtotime($tgl_izin_dari));
+            $tahun = date("Y", strtotime($tgl_izin_dari));
+            $thn = substr($tahun, 2, 2);
+
+            // Generate kode_izin
+            $lastizin = DB::table('pengajuan_izin')
+                ->whereRaw('MONTH(tgl_izin_dari)="' . $bulan . '"')
+                ->whereRaw('YEAR(tgl_izin_dari)="' . $tahun . '"')
+                ->orderBy('kode_izin', 'desc')
+                ->first();
+            $lastkodeizin = $lastizin != null ? $lastizin->kode_izin : "";
+            $format = "IZ" . $bulan . $thn;
+            $kode_izin = buatkode($lastkodeizin, $format, 3);
+
+            // Update atau buat data
+            Pengajuanizin::Create(
+                // ['kode_izin' => $kode_izin],
+                [
+                    'kode_izin' => $kode_izin,
+                    'tgl_izin_dari'   => Carbon::createFromFormat('Y-m-d', $row[0])->format('Y-m-d'),
+                    'tgl_izin_sampai' => Carbon::createFromFormat('Y-m-d', $row[1])->format('Y-m-d'),
+                    'nik'             => $row[2],
+                    'status'          => $row[3],
+                    'keterangan'      => $row[4],
+                    'status_approved' => $row[5],
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Data berhasil diimpor!');
+    }
+
 
     public function approveizinsakit(Request $request)
     {
@@ -921,13 +1149,13 @@ class PresensiController extends Controller
         $kode_jam_kerja = $status == "a" ? NULL : $request->kode_jam_kerja;
 
         if ($request->hasFile('foto_in')) {
-            $foto_in = $nik."-" .$tanggal."-in". "." . $request->file('foto_in')->getClientOriginalExtension();
+            $foto_in = $nik . "-" . $tanggal . "-in" . "." . $request->file('foto_in')->getClientOriginalExtension();
         } else {
             $foto_in = null;
         }
 
         if ($request->hasFile('foto_out')) {
-            $foto_out = $nik."-" .$tanggal."-out". "." . $request->file('foto_out')->getClientOriginalExtension();
+            $foto_out = $nik . "-" . $tanggal . "-out" . "." . $request->file('foto_out')->getClientOriginalExtension();
         } else {
             $foto_out = null;
         }
@@ -936,7 +1164,7 @@ class PresensiController extends Controller
 
             $cekpresensi = DB::table('presensi')->where('nik', $nik)->where('tgl_presensi', $tanggal)->count();
             if ($cekpresensi > 0) {
-            $simpan =  DB::table('presensi')
+                $simpan =  DB::table('presensi')
                     ->where('nik', $nik)
                     ->where('tgl_presensi', $tanggal)
                     ->update([
@@ -947,15 +1175,15 @@ class PresensiController extends Controller
                         'kode_jam_kerja' => $kode_jam_kerja,
                         'status' => $status
                     ]);
-                    if ($request->hasFile('foto_in')) {
-                        $folderPath = "public/uploads/absensi/";
-                        $request->file('foto_in')->storeAs($folderPath, $foto_in);
-                    }
+                if ($request->hasFile('foto_in')) {
+                    $folderPath = "public/uploads/absensi/";
+                    $request->file('foto_in')->storeAs($folderPath, $foto_in);
+                }
 
-                    if ($request->hasFile('foto_out')) {
-                        $folderPath = "public/uploads/absensi/";
-                        $request->file('foto_out')->storeAs($folderPath, $foto_out);
-                    }
+                if ($request->hasFile('foto_out')) {
+                    $folderPath = "public/uploads/absensi/";
+                    $request->file('foto_out')->storeAs($folderPath, $foto_out);
+                }
             } else {
                 $simpan = DB::table('presensi')->insert([
                     'nik' => $nik,

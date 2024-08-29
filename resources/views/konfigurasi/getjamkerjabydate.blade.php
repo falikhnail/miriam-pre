@@ -4,7 +4,8 @@
         <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
         <td>{{ $d->nama_jam_kerja }}</td>
         <td>
-            <a href="#" class="btn btn-danger btn-sm hapus" nik="{{ $d->nik }}" tanggal="{{ $d->tanggal }}">
+            <a href="#" class="btn btn-danger btn-sm hapus" data-nik="{{ $d->nik }}"
+                data-tanggal="{{ $d->tanggal }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24"
                     height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -24,41 +25,64 @@
     $(function() {
         function loadjamkerjabydate() {
             var nik = "{{ $nik }}";
-            $("#loadjamkerjabydate").load('/konfigurasi/' + nik + '/getjamkerjabydate');
+            var bulan = $("#bulan").val();
+            var tahun = $("#tahun").val();
+            $("#loadjamkerjabydate").load('/konfigurasi/' + nik + '/' + bulan + '/' + tahun +
+                '/getjamkerjabydate');
         }
-        $(".hapus").click(function(e) {
+
+        $(document).on('click', '.hapus', function(e) {
             e.preventDefault();
-            var nik = $(this).attr("nik");
-            var tanggal = $(this).attr("tanggal");
-            $.ajax({
-                type: 'POST',
-                url: '/konfigurasi/deletejamkerjabydate',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    nik: nik,
-                    tanggal: tanggal
-                },
-                cache: false,
-                success: function(respond) {
-                    if (respond == 0) {
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: 'Data Berhasil Disimpan',
-                            icon: 'success',
-                            confirmButtonText: 'Ok'
-                        }).then((result) => {
-                            loadjamkerjabydate();
-                        });
-                    } else {
-                        Swal.fire({
-                            title: 'Gagal!',
-                            text: 'Data Gagal Disimpan',
-                            icon: 'error',
-                            confirmButtonText: 'Ok'
-                        }).then((result) => {
-                            loadjamkerjabydate();
-                        });
-                    }
+            var nik = $(this).data("nik");
+            var tanggal = $(this).data("tanggal");
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda yakin ingin menghapus data ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/konfigurasi/deletejamkerjabydate',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            nik: nik,
+                            tanggal: tanggal
+                        },
+                        cache: false,
+                        success: function(respond) {
+                            if (respond == 0) {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: 'Data Berhasil Dihapus',
+                                    icon: 'success',
+                                    confirmButtonText: 'Ok'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        loadjamkerjabydate();
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: 'Data Gagal Dihapus',
+                                    icon: 'error',
+                                    confirmButtonText: 'Ok'
+                                }).then((result) => {
+                                    loadjamkerjabydate();
+                                    if (result.isConfirmed) {
+                                        loadjamkerjabydate();
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
             });
         });

@@ -114,6 +114,7 @@ Route::group(['middleware' => ['role:administrator|admin departemen,user']], fun
     Route::post('/konfigurasi/updatesetjamkerja', [KonfigurasiController::class, 'updatesetjamkerja']);
     Route::post('/konfigurasi/storesetjamkerjabydate', [KonfigurasiController::class, 'storesetjamkerjabydate']);
     Route::get('/konfigurasi/{nik}/{bulan}/{tahun}/getjamkerjabydate', [KonfigurasiController::class, 'getjamkerjabydate']);
+    Route::get('/konfigurasi/{nik}/{bulan}/{tahun}/delete', [KonfigurasiController::class, 'deletejamkerjabydate']);
     Route::post('/konfigurasi/deletejamkerjabydate', [KonfigurasiController::class, 'deletejamkerjabydate']);
     //Presensi
     Route::get('/presensi/monitoring', [PresensiController::class, 'monitoring']);
@@ -123,9 +124,10 @@ Route::group(['middleware' => ['role:administrator|admin departemen,user']], fun
     Route::post('/presensi/cetaklaporan', [PresensiController::class, 'cetaklaporan']);
     Route::get('/presensi/rekap', [PresensiController::class, 'rekap']);
     Route::post('/presensi/cetakrekap', [PresensiController::class, 'cetakrekap']);
+    Route::get('/presensi/izinsakit/export', [PresensiController::class, 'exportExcel']);
 
     Route::get('/presensi/izinsakit', [PresensiController::class, 'izinsakit']);
-
+    Route::post('importdata', [PresensiController::class, 'importData'])->name('import.data');
     Route::post('/koreksipresensi', [PresensiController::class, 'koreksipresensi']);
     Route::post('/storekoreksipresensi', [PresensiController::class, 'storekoreksipresensi']);
 });

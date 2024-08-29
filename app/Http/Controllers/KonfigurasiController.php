@@ -353,6 +353,8 @@ class KonfigurasiController extends Controller
     }
 
 
+
+
     public function deletejamkerjabydate(Request $request)
     {
         $nik = $request->nik;
